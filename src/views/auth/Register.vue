@@ -140,8 +140,8 @@ const register = async () => {
     })
 
     // Simpan user dan token ke localStorage
-    localStorage.setItem('token', res.data.access_token)
-    localStorage.setItem('user', JSON.stringify(res.data.user))
+    localStorage.setItem('token', res.data.data.access_token)
+    localStorage.setItem('user', JSON.stringify(res.data.data.user))
 
     // Arahkan ke dashboard
     window.location.href = '/dashboard'
