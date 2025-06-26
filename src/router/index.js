@@ -5,6 +5,7 @@ import Dashboard from '../views/master/Dashboard.vue'
 import Home from '../views/Home.vue'
 import Arisangroup from '../views/master/group/Arisangroup.vue'
 import CreateGroup from '../views/master/group/createGroup.vue'
+import JoinGroup from '../views/master/group/joinGroup.vue'
 
 const routes = [
   { path: '/', component: Home },
@@ -23,6 +24,11 @@ const routes = [
   { 
     path: '/addgroup', 
     component: CreateGroup,
+    meta: {requiresAuth: true}
+  },
+  { 
+    path: '/join', 
+    component: JoinGroup,
     meta: {requiresAuth: true}
   }
 ]

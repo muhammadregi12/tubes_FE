@@ -180,12 +180,14 @@ const resetForm = () => {
   }
 }
 
+import { deployArisanContract } from '../../../services/arisanContract.js'
+
+
 const submitForm = async () => {
   try {
     loading.value = true
     const token = localStorage.getItem('token')
 
-    // Validasi awal
     if (!form.value.name || !form.value.amount || !form.value.start_date || !form.value.duration) {
       notificationMessage.value = 'Pastikan semua data wajib diisi!'
       notificationType.value = 'error'
@@ -194,6 +196,7 @@ const submitForm = async () => {
       return
     }
 
+    // 🧠 STEP 1: Simpan group dulu ke backend
     const response = await api.post('/arisanGroup', form.value, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -201,16 +204,29 @@ const submitForm = async () => {
       }
     })
 
-    // Tampilkan notifikasi sukses
-    notificationMessage.value = 'Group arisan berhasil ditambahkan!'
+    const createdGroup = response.data.data
+
+    // 🧠 STEP 2: Deploy kontrak via ethers.js
+    const contractAddress = await deployArisanContract()
+
+    // 🧠 STEP 3: Kirim contract address ke Laravel
+    await api.post(`/arisanGroup/${createdGroup.id}/contract-address`, {
+      contract_address: contractAddress
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json'
+      }
+    })
+
+    notificationMessage.value = 'Group arisan & kontrak berhasil disimpan!'
     notificationType.value = 'success'
     showNotification.value = true
 
-    // Redirect setelah 1.5 detik
     setTimeout(() => {
       router.push('/arisangroup')
     }, 2000)
-    
+
   } catch (error) {
     console.error('Error:', error)
     notificationMessage.value = 'Terjadi kesalahan: ' + (error.response?.data?.message || error.message)
@@ -220,4 +236,6 @@ const submitForm = async () => {
     loading.value = false
   }
 }
+
+
 </script>
