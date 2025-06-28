@@ -38,20 +38,20 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  const isAuthenticated = !!localStorage.getItem('token')
+// router.beforeEach((to, from, next) => {
+//   const isAuthenticated = !!localStorage.getItem('token')
 
-  // Jika rute memerlukan auth dan user belum login
-  if (to.matched.some(record => record.meta.requiresAuth) && !isAuthenticated) {
-    next('/login')
-  } 
-  // Jika user sudah login dan mencoba mengakses login/register
-  else if ((to.path === '/login' || to.path === '/register') && isAuthenticated) {
-    next('/dashboard')
-  } 
-  else {
-    next()
-  }
-})
+//   // Jika rute memerlukan auth dan user belum login
+//   if (to.matched.some(record => record.meta.requiresAuth) && !isAuthenticated) {
+//     next('/login')
+//   } 
+//   // Jika user sudah login dan mencoba mengakses login/register
+//   else if ((to.path === '/login' || to.path === '/register') && isAuthenticated) {
+//     next('/dashboard')
+//   } 
+//   else {
+//     next()
+//   }
+// })
 
 export default router
