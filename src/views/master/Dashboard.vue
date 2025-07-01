@@ -4,11 +4,8 @@
       <div class="relative bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg shadow-sm p-6">
         <!-- Animated Emote Icon -->
         <div class="absolute -top-6 -left-6 animate-float">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-yellow-300" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.736 6.979a.75.75 0 011.06.02l1.5 1.6a.75.75 0 010 1.04l-1.5 1.6a.75.75 0 11-1.08-1.04L9.716 8.5l-1.2-1.28a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-yellow-300" viewBox="0 0 20 20" fill="currentColor"></svg>
         </div>
-
         <!-- Welcome Message -->
         <div class="alert alert-success bg-green-50 border-l-4 border-green-500 p-4 mb-6">
           <div class="flex items-center">

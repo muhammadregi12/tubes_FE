@@ -48,8 +48,7 @@
           Selamat datang di <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Arichain</span>
         </h1>
         <p class="text-gray-600 text-xl animate-slide-up delay-100">
-          Platform arisan digital modern yang membuat pengelolaan arisan menjadi mudah, aman, dan menyenangkan.
-        </p>
+            <B>Bangun Komunitas.</B> <b>Kelola Keuangan.</b><b>Tingkatkan Kebersamaan.</b> Satu platform untuk arisan yang jujur dan efisien.</p>
         <div class="flex gap-4 animate-slide-up delay-200">
           <router-link to="/register">
             <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3.5 rounded-full text-lg font-medium transition-transform hover:scale-105 shadow-md">
