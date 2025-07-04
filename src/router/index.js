@@ -6,6 +6,7 @@ import Home from '../views/Home.vue'
 import Arisangroup from '../views/master/group/Arisangroup.vue'
 import CreateGroup from '../views/master/group/createGroup.vue'
 import JoinGroup from '../views/master/group/joinGroup.vue'
+import Arisanku from '../views/master/group/arisanku.vue'
 
 const routes = [
   { path: '/', component: Home },
@@ -30,7 +31,14 @@ const routes = [
     path: '/join', 
     component: JoinGroup,
     meta: {requiresAuth: true}
+  },
+
+  { 
+    path: '/arisanku', 
+    component: Arisanku,
+    meta: {requiresAuth: true}
   }
+  
 ]
 
 const router = createRouter({

@@ -41,6 +41,28 @@
               placeholder="John Doe"/>
           </div>
 
+          <!-- Wallet Address -->
+          <div class="space-y-1">
+            <label class="block text-sm font-medium text-gray-700">Wallet Address</label>
+            <div class="flex gap-2">
+              <input 
+                v-model="wallet_address" 
+                type="text"
+                @blur="validateWallet"
+                class="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
+                placeholder="0x1234abcd..." />
+              <button 
+                type="button" 
+                @click="getFromMetamask"
+                class="bg-yellow-400 hover:bg-yellow-500 text-black font-medium px-3 rounded transition"
+              >
+                Ambil
+              </button>
+            </div>
+            <p v-if="walletError" class="text-red-500 text-sm">{{ walletError }}</p>
+          </div>
+
+
           <!-- Email -->
           <div class="space-y-1">
             <label class="block text-sm font-medium text-gray-700">Email</label>
@@ -48,6 +70,8 @@
               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
               placeholder="email@contoh.com"/>
           </div>
+
+
 
           <!-- Password -->
           <div class="space-y-1 relative">
@@ -99,6 +123,8 @@
               Memproses...
             </span>
           </button>
+
+          
         </form>
 
         <!-- Error -->
@@ -121,6 +147,9 @@
 import { ref } from 'vue'
 import api from '../../axios'
 
+const wallet_address = ref('')
+const walletError = ref(null)
+
 const name = ref('')
 const email = ref('')
 const password = ref('')
@@ -133,15 +162,58 @@ const isLoading = ref(false)
 const openEye = 'M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z'
 const closedEye = 'M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411L21 21'
 
+
+const validateWallet = () => {
+  const re = /^0x[a-fA-F0-9]{40}$/;
+  if (!wallet_address.value) {
+    walletError.value = null; // kosong? gapapa
+  } else if (!re.test(wallet_address.value)) {
+    walletError.value = 'Format wallet address tidak valid.';
+  } else {
+    walletError.value = null;
+  }
+}
+
+const getFromMetamask = async () => {
+  walletError.value = null
+  if (typeof window.ethereum === 'undefined') {
+    walletError.value = 'Metamask tidak terdeteksi.';
+    return;
+  }
+
+  try {
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    if (accounts.length > 0) {
+      wallet_address.value = accounts[0];
+      validateWallet();
+    } else {
+      walletError.value = 'Tidak ada akun Metamask yang ditemukan.';
+    }
+  } catch (err) {
+    walletError.value = 'Gagal mengambil wallet dari Metamask.';
+  }
+}
+
+
+
 const register = async () => {
   error.value = null
+  walletError.value = null
   isLoading.value = true
+
+  validateWallet()
+  if (walletError.value) {
+    isLoading.value = false
+    return
+  }
+
   try {
     const res = await api.post('/register', {
       name: name.value,
       email: email.value,
       password: password.value,
-      password_confirmation: password_confirmation.value
+      password_confirmation: password_confirmation.value,
+      wallet_address: wallet_address.value
     })
     localStorage.setItem('token', res.data.data.access_token)
     localStorage.setItem('user', JSON.stringify(res.data.data.user))
@@ -151,6 +223,7 @@ const register = async () => {
     isLoading.value = false
   }
 }
+
 </script>
 
 <style>
