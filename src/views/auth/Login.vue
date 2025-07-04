@@ -3,15 +3,23 @@
     <!-- Kartu Form -->
     <div class="relative w-full max-w-md rounded-3xl bg-gradient-to-br from-white via-slate-100 to-blue-100 text-slate-800 shadow-2xl p-8 animate-fade-in transition-all duration-500 hover:scale-[1.015] border border-blue-200/30">
 
+      <!-- Tombol Back -->
+      <div class="mb-4">
+        <router-link to="/" class="inline-flex items-center text-sm text-indigo-600 hover:text-indigo-800 font-medium transition duration-200">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          Kembali
+        </router-link>
+      </div>
+
       <!-- Logo ARICHAIN: Ping dan Ring Light -->
       <div class="flex justify-center mb-4">
         <div class="relative w-16 h-16">
           <!-- Ring Light berputar -->
           <div class="absolute inset-0 rounded-full border-[3px] border-blue-300 opacity-40 animate-spin-slow blur-sm"></div>
-
           <!-- Ping Effect -->
           <div class="absolute inset-0 rounded-full bg-blue-400 opacity-30 blur-md animate-ping-slow"></div>
-
           <!-- Logo handshake -->
           <img
             src="https://img.icons8.com/ios-filled/50/ffffff/handshake.png"

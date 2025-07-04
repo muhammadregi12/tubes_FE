@@ -3,8 +3,19 @@
     <!-- Card -->
     <div class="relative w-full max-w-md rounded-3xl bg-gradient-to-br from-white via-slate-100 to-blue-100 text-slate-800 shadow-2xl p-8 animate-fade-in transition-all duration-500 hover:scale-[1.015] border border-blue-200/30">
 
-      <!-- Logo ARICHAIN -->
-      <div class="flex justify-center mb-4">
+      <!-- Tombol Back (di dalam card, atas logo) -->
+        <div class="mb-4">
+          <router-link to="/" class="inline-flex items-center text-sm text-indigo-600 hover:text-indigo-800 font-medium transition duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Kembali
+          </router-link>
+        </div>
+
+
+      <!-- Logo -->
+      <div class="flex justify-center mb-4 mt-2">
         <div class="relative w-16 h-16">
           <div class="absolute inset-0 rounded-full border-[3px] border-blue-300 opacity-40 animate-spin-slow blur-sm"></div>
           <div class="absolute inset-0 rounded-full bg-blue-400 opacity-30 blur-md animate-ping-slow"></div>
@@ -12,20 +23,16 @@
         </div>
       </div>
 
-      <!-- Branding -->
       <h1 class="text-center text-3xl font-bold tracking-wide animate-text-glow text-indigo-600">ARICHAIN</h1>
       <p class="text-center text-sm text-slate-600 mb-6">Buat akun digital arisan Anda</p>
 
-      <!-- Register Form -->
       <form @submit.prevent="register" class="space-y-4">
-        <!-- Nama -->
         <div>
           <label class="text-sm font-medium text-slate-700">Nama</label>
           <input v-model="name" type="text" required placeholder="John Doe"
             class="w-full mt-1 px-4 py-2 rounded-lg bg-white/80 placeholder-slate-400 text-slate-800 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
         </div>
 
-        <!-- Wallet Address -->
         <div>
           <label class="text-sm font-medium text-slate-700">Wallet Address</label>
           <div class="flex gap-2 mt-1">
@@ -38,14 +45,12 @@
           <p v-if="walletError" class="text-red-500 text-sm mt-1">{{ walletError }}</p>
         </div>
 
-        <!-- Email -->
         <div>
           <label class="text-sm font-medium text-slate-700">Email</label>
           <input v-model="email" type="email" required placeholder="email@contoh.com"
             class="w-full mt-1 px-4 py-2 rounded-lg bg-white/80 placeholder-slate-400 text-slate-800 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
         </div>
 
-        <!-- Password -->
         <div class="relative">
           <label class="text-sm font-medium text-slate-700">Password</label>
           <input v-model="password" :type="showPassword ? 'text' : 'password'" required placeholder="••••••••"
@@ -57,7 +62,6 @@
           </button>
         </div>
 
-        <!-- Konfirmasi Password -->
         <div class="relative">
           <label class="text-sm font-medium text-slate-700">Konfirmasi Password</label>
           <input v-model="password_confirmation" :type="showPasswordConfirm ? 'text' : 'password'" required placeholder="••••••••"
@@ -69,7 +73,6 @@
           </button>
         </div>
 
-        <!-- Submit -->
         <button type="submit" class="w-full py-2 bg-indigo-500 text-white font-semibold rounded-lg hover:bg-indigo-600 transition-all duration-300 shadow-md">
           <span v-if="!isLoading">Daftar</span>
           <span v-else class="flex items-center justify-center">
@@ -81,13 +84,11 @@
           </span>
         </button>
 
-        <!-- Error -->
         <div v-if="error" class="p-3 bg-red-100 border border-red-300 text-sm rounded-md text-red-600 animate-shake">
           {{ error }}
         </div>
       </form>
 
-      <!-- Link ke Login -->
       <div class="mt-6 text-center text-sm text-slate-600">
         Sudah punya akun?
         <router-link to="/login" class="underline font-semibold text-blue-600 hover:text-indigo-600 transition">
