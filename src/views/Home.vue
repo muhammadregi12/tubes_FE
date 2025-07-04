@@ -54,7 +54,7 @@
           Selamat datang di <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-blue-500 to-purple-500">Arichain</span>
         </h1>
         <p class="text-gray-600 text-xl animate-typing border-r-4 border-indigo-600 whitespace-nowrap overflow-hidden max-w-full">
-          Bangun Komunitas. Kelola Keuangan. Tingkatkan Kebersamaan.
+          <b>Bangun Komunitas. Kelola Keuangan. Tingkatkan Kebersamaan.</b>
         </p>
         <div class="flex gap-4 animate-fade-up delay-200">
           <router-link to="/register">

@@ -23,7 +23,10 @@
         </div>
       </div>
 
-      <h1 class="text-center text-3xl font-bold tracking-wide animate-text-glow text-indigo-600">ARICHAIN</h1>
+        <h1 class="text-center text-3xl font-bold tracking-wide text-gray-800">
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-blue-500 to-purple-500">ARICHAIN</span>
+        </h1>
+
       <p class="text-center text-sm text-slate-600 mb-6">Buat akun digital arisan Anda</p>
 
       <form @submit.prevent="register" class="space-y-4">
