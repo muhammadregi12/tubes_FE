@@ -6,10 +6,8 @@ export const deployArisanContract = async () => {
     throw new Error('MetaMask tidak terdeteksi. Silakan instal MetaMask!')
   }
 
-  // ✅ Paksa user connect wallet
   await window.ethereum.request({ method: 'eth_requestAccounts' })
 
-  // ✅ Tambahkan pengecekan dan ganti jaringan ke Sepolia (chainId: 11155111 atau 0xaa36a7)
   const sepoliaChainId = '0xaa36a7'
   const currentChain = await window.ethereum.request({ method: 'eth_chainId' })
 
@@ -24,14 +22,16 @@ export const deployArisanContract = async () => {
     }
   }
 
-  // ✅ Provider & signer
   const provider = new ethers.BrowserProvider(window.ethereum)
   const signer = await provider.getSigner()
 
-  // ✅ Deploy kontrak
   const factory = new ethers.ContractFactory(Arisan.abi, Arisan.bytecode, signer)
-  const contract = await factory.deploy()
+
+  const feeInWei = ethers.parseEther('0.01')   // 0.01 ETH per peserta
+  const intervalSeconds = 3600                 // 1 jam
+
+  const contract = await factory.deploy(feeInWei, intervalSeconds)
   await contract.waitForDeployment()
 
-  return contract.target // atau contract.address untuk ethers v5
+  return contract.target
 }

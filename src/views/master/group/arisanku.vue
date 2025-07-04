@@ -142,25 +142,40 @@ export default {
           draw_date: new Date().toISOString().split('T')[0],
         });
 
-        this.notificationMessage = 'Draw berhasil & dicatat!';
+        this.notificationMessage = `🎉 Pemenang: ${winnerUser.data.name} (${winnerAddress}) dicatat di sistem!`;
         this.notificationType = 'success';
         this.showNotification = true;
-        setTimeout(() => this.showNotification = false, 3000);
+
+        setTimeout(() => (this.showNotification = false), 3000);
 
         this.fetchJoinedGroups();
       } catch (err) {
-        this.notificationMessage = err.response?.data?.message || err.message || 'Gagal draw.';
+        // Tambahkan pengecekan jika error dari smart contract karena semua sudah menang
+        const msg =
+          err?.reason ||
+          err?.error?.message ||
+          err?.response?.data?.message ||
+          err?.message ||
+          'Gagal draw.';
+
+        if (msg.includes('Arisan selesai') || msg.includes('semua sudah menang')) {
+          this.notificationMessage =
+            '🎉 Arisan sudah selesai, semua peserta sudah pernah menang.';
+        } else {
+          this.notificationMessage = msg;
+        }
+
         this.notificationType = 'error';
         this.showNotification = true;
-        setTimeout(() => this.showNotification = false, 3000);
+        setTimeout(() => (this.showNotification = false), 3000);
       }
     },
 
 
-async getNextDrawNumber(groupId) {
-  const response = await axios.get(`/arisanGroup/${groupId}/next-draw-number`);
-  return response.data.next_draw_number;
-},
+    async getNextDrawNumber(groupId) {
+      const response = await axios.get(`/arisanGroup/${groupId}/next-draw-number`);
+      return response.data.next_draw_number;
+    },
 
 
 
