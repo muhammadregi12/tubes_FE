@@ -1,26 +1,30 @@
 <template>
   <DefaultLayout>
-    <div class="relative bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl shadow-md p-6 text-white overflow-hidden">
+    <div class="relative bg-gradient-to-br from-indigo-800 via-purple-800 to-blue-800 rounded-2xl shadow-2xl p-8 text-white overflow-hidden animate-fade-in-up">
+
       <!-- Animated Coin Icon -->
-      <div class="absolute -top-6 -left-6 animate-float">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-yellow-300" viewBox="0 0 20 20" fill="currentColor"></svg>
+      <div class="absolute -top-6 -left-6 animate-bounce-slow z-10">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-14 w-14 text-yellow-300 drop-shadow-lg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 17h-1v-1h1v1zm1.07-7.75c-.9.32-1.57.86-2.03 1.54-.23.36-.34.65-.34 1.21h-1v-.5c0-.74.27-1.39.66-1.89.47-.61 1.19-1.16 2.3-1.58.93-.35 1.34-.77 1.34-1.45 0-.86-.7-1.5-1.65-1.5-.79 0-1.44.45-1.75 1.09L9.5 8.3c.5-.96 1.54-1.8 3.05-1.8 1.79 0 3 1.13 3 2.61 0 1.3-.77 2.04-2.03 2.56z"/>
+        </svg>
       </div>
+
       <!-- Header & Search -->
-      <div class="mb-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div class="mb-8 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <h2 class="text-2xl font-bold">Daftar Group Arisan</h2>
-          <p class="text-purple-100">Kelola dan pantau semua group arisan di sini</p>
+          <h2 class="text-3xl font-bold tracking-wide">📂 Daftar Group Arisan</h2>
+          <p class="text-indigo-200">Kelola dan pantau semua group arisan dengan mudah dan cepat</p>
         </div>
-        <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+        <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           <input
             v-model="searchQuery"
             type="text"
-            placeholder="Cari group..."
-            class="w-full sm:w-64 px-4 py-2 rounded-lg bg-white text-gray-900 shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-300 border border-gray-300"
+            placeholder="🔍 Cari group..."
+            class="w-full sm:w-72 px-4 py-2.5 rounded-xl bg-white text-gray-800 placeholder:text-gray-400 shadow-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 border border-gray-300"
           />
           <router-link
             to="/addgroup"
-            class="px-5 py-2 rounded-lg bg-white text-gray-900 shadow-md border border-gray-300 hover:bg-yellow-300 hover:text-gray-900 transition-colors font-semibold text-center"
+            class="px-6 py-2.5 rounded-xl bg-yellow-300 hover:bg-yellow-400 text-gray-900 shadow-md font-semibold transition-colors"
           >
             + Tambah Group
           </router-link>
@@ -28,22 +32,26 @@
       </div>
 
       <!-- Table -->
-      <div class="overflow-x-auto bg-white rounded-lg shadow text-gray-700">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-blue-50 text-indigo-800">
+      <div class="overflow-x-auto rounded-2xl shadow-2xl backdrop-blur-xl bg-white/10 border border-white/20">
+        <table class="min-w-full text-sm text-white backdrop-blur">
+          <thead class="bg-white/20 text-indigo-100 uppercase text-xs">
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-semibold">Nama Group</th>
-              <th class="px-6 py-3 text-left text-xs font-semibold">Nilai Arisan</th>
-              <th class="px-6 py-3 text-left text-xs font-semibold">Durasi</th>
-              <th class="px-6 py-3 text-left text-xs font-semibold">Tanggal Mulai</th>
-              <th class="px-6 py-3 text-left text-xs font-semibold">Tanggal Selesai</th>
+              <th class="px-6 py-4 text-left">Nama Group</th>
+              <th class="px-6 py-4 text-left">Nilai Arisan</th>
+              <th class="px-6 py-4 text-left">Durasi</th>
+              <th class="px-6 py-4 text-left">Tanggal Mulai</th>
+              <th class="px-6 py-4 text-left">Tanggal Selesai</th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-100">
-            <tr v-for="group in arisanGroups" :key="group.id" class="hover:bg-gray-50">
-              <td class="px-6 py-4 whitespace-nowrap font-medium text-indigo-700">
-                {{ group.name }}<br />
-                <span class="text-sm text-gray-500">#{{ group.code }}</span>
+          <tbody>
+            <tr
+              v-for="group in arisanGroups"
+              :key="group.id"
+              class="hover:bg-white/10 border-t border-white/10 transition duration-200"
+            >
+              <td class="px-6 py-4 font-semibold text-indigo-100">
+                {{ group.name }} <br />
+                <span class="text-sm text-white/60">#{{ group.code }}</span>
               </td>
               <td class="px-6 py-4">Rp {{ formatCurrency(group.amount) }}</td>
               <td class="px-6 py-4">{{ group.duration }}</td>
@@ -52,22 +60,26 @@
             </tr>
           </tbody>
         </table>
-        <div v-if="arisanGroups.length === 0" class="text-center py-6 text-gray-500">
+        <div v-if="arisanGroups.length === 0" class="text-center py-6 text-white/60">
           Tidak ada data group arisan.
         </div>
       </div>
 
       <!-- Pagination -->
-      <div class="mt-4 flex justify-between items-center text-sm text-white">
+      <div class="mt-6 flex justify-between items-center text-sm text-white">
         <p>
           Menampilkan {{ (currentPage - 1) * perPage + 1 }} -
           {{ Math.min(currentPage * perPage, totalItems) }} dari {{ totalItems }} data
         </p>
-        <div class="flex gap-2">
+        <div class="flex gap-3">
           <button @click="prevPage" :disabled="currentPage === 1"
-            class="px-3 py-1 bg-white text-indigo-600 rounded shadow hover:bg-indigo-100 disabled:opacity-50">Sebelumnya</button>
+            class="px-4 py-1.5 bg-white text-indigo-700 rounded-full shadow hover:bg-indigo-100 disabled:opacity-50">
+            ← Sebelumnya
+          </button>
           <button @click="nextPage" :disabled="currentPage === totalPages"
-            class="px-3 py-1 bg-white text-indigo-600 rounded shadow hover:bg-indigo-100 disabled:opacity-50">Selanjutnya</button>
+            class="px-4 py-1.5 bg-white text-indigo-700 rounded-full shadow hover:bg-indigo-100 disabled:opacity-50">
+            Selanjutnya →
+          </button>
         </div>
       </div>
     </div>
@@ -79,7 +91,6 @@ import { ref, watch, onMounted } from 'vue'
 import DefaultLayout from '../../../components/DefaultLayout.vue'
 import api from '../../../axios'
 import debounce from 'lodash/debounce'
-import { useRouter } from 'vue-router'
 
 const arisanGroups = ref([])
 const currentPage = ref(1)
@@ -88,7 +99,6 @@ const perPage = ref(10)
 const totalItems = ref(0)
 const searchQuery = ref('')
 const loading = ref(true)
-const router = useRouter()
 
 const fetchArisanGroups = async () => {
   try {
@@ -132,11 +142,19 @@ onMounted(() => fetchArisanGroups())
 </script>
 
 <style scoped>
-@keyframes float {
+@keyframes bounce-slow {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-12px); }
 }
-.animate-float {
-  animation: float 4s ease-in-out infinite;
+.animate-bounce-slow {
+  animation: bounce-slow 3s ease-in-out infinite;
+}
+
+@keyframes fade-in-up {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+  animation: fade-in-up 1s ease-out;
 }
 </style>

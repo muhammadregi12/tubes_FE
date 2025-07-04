@@ -1,143 +1,98 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
-    <!-- Main Card -->
-    <div class="relative w-full max-w-md bg-white rounded-xl shadow-2xl overflow-hidden transition-all duration-500 hover:shadow-lg hover:scale-[1.02]">
-      
-      <!-- Tombol Back -->
-      <router-link 
-        to="/" 
-        class="absolute top-4 left-4 group z-10"
-      >
-        <div class="w-9 h-9 flex items-center justify-center rounded-full bg-indigo-50 hover:bg-indigo-100 text-indigo-600 hover:text-indigo-800 shadow transition-all duration-300">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-          </svg>
-        </div>
-      </router-link>
+  <div class="min-h-screen bg-white flex items-center justify-center p-6">
+    <!-- Card -->
+    <div class="relative w-full max-w-md rounded-3xl bg-gradient-to-br from-white via-slate-100 to-blue-100 text-slate-800 shadow-2xl p-8 animate-fade-in transition-all duration-500 hover:scale-[1.015] border border-blue-200/30">
 
-      <!-- Animated Header -->
-      <div class="relative h-32 bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-center">
-        <div class="absolute -top-6 -left-6 animate-float">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.736 6.979a.75.75 0 011.06.02l1.5 1.6a.75.75 0 010 1.04l-1.5 1.6a.75.75 0 11-1.08-1.04L9.716 8.5l-1.2-1.28a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-          </svg>
-        </div>
-        <h1 class="text-3xl font-bold text-white z-10 animate-bounce">Arisan Digital</h1>
-        <div class="absolute -bottom-4 -right-4 animate-float-delay">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-yellow-300 opacity-80" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm5-1a1 1 0 11-2 0 1 1 0 012 0z" clip-rule="evenodd" />
-          </svg>
+      <!-- Logo ARICHAIN -->
+      <div class="flex justify-center mb-4">
+        <div class="relative w-16 h-16">
+          <div class="absolute inset-0 rounded-full border-[3px] border-blue-300 opacity-40 animate-spin-slow blur-sm"></div>
+          <div class="absolute inset-0 rounded-full bg-blue-400 opacity-30 blur-md animate-ping-slow"></div>
+          <img src="https://img.icons8.com/ios-filled/50/ffffff/handshake.png" alt="Logo" class="relative z-10 w-16 h-16 bg-gradient-to-tr from-blue-500 to-indigo-500 p-3 rounded-full shadow-xl" />
         </div>
       </div>
 
-      <!-- Form Register -->
-      <div class="p-8 space-y-6">
-        <form @submit.prevent="register" class="space-y-4">
-          <!-- Nama -->
-          <div class="space-y-1">
-            <label class="block text-sm font-medium text-gray-700">Nama</label>
-            <input v-model="name" type="text" required
-              class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
-              placeholder="John Doe"/>
+      <!-- Branding -->
+      <h1 class="text-center text-3xl font-bold tracking-wide animate-text-glow text-indigo-600">ARICHAIN</h1>
+      <p class="text-center text-sm text-slate-600 mb-6">Buat akun digital arisan Anda</p>
+
+      <!-- Register Form -->
+      <form @submit.prevent="register" class="space-y-4">
+        <!-- Nama -->
+        <div>
+          <label class="text-sm font-medium text-slate-700">Nama</label>
+          <input v-model="name" type="text" required placeholder="John Doe"
+            class="w-full mt-1 px-4 py-2 rounded-lg bg-white/80 placeholder-slate-400 text-slate-800 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
+        </div>
+
+        <!-- Wallet Address -->
+        <div>
+          <label class="text-sm font-medium text-slate-700">Wallet Address</label>
+          <div class="flex gap-2 mt-1">
+            <input v-model="wallet_address" @blur="validateWallet" type="text" placeholder="0x1234abcd..."
+              class="flex-1 px-4 py-2 rounded-lg bg-white/80 placeholder-slate-400 text-slate-800 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+            <button @click="getFromMetamask" type="button" class="px-3 rounded bg-yellow-400 hover:bg-yellow-500 text-black font-semibold">
+              Ambil
+            </button>
           </div>
+          <p v-if="walletError" class="text-red-500 text-sm mt-1">{{ walletError }}</p>
+        </div>
 
-          <!-- Wallet Address -->
-          <div class="space-y-1">
-            <label class="block text-sm font-medium text-gray-700">Wallet Address</label>
-            <div class="flex gap-2">
-              <input 
-                v-model="wallet_address" 
-                type="text"
-                @blur="validateWallet"
-                class="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
-                placeholder="0x1234abcd..." />
-              <button 
-                type="button" 
-                @click="getFromMetamask"
-                class="bg-yellow-400 hover:bg-yellow-500 text-black font-medium px-3 rounded transition"
-              >
-                Ambil
-              </button>
-            </div>
-            <p v-if="walletError" class="text-red-500 text-sm">{{ walletError }}</p>
-          </div>
+        <!-- Email -->
+        <div>
+          <label class="text-sm font-medium text-slate-700">Email</label>
+          <input v-model="email" type="email" required placeholder="email@contoh.com"
+            class="w-full mt-1 px-4 py-2 rounded-lg bg-white/80 placeholder-slate-400 text-slate-800 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
+        </div>
 
-
-          <!-- Email -->
-          <div class="space-y-1">
-            <label class="block text-sm font-medium text-gray-700">Email</label>
-            <input v-model="email" type="email" required
-              class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
-              placeholder="email@contoh.com"/>
-          </div>
-
-
-
-          <!-- Password -->
-          <div class="space-y-1 relative">
-            <label class="block text-sm font-medium text-gray-700">Password</label>
-            <div class="relative">
-              <input v-model="password" :type="showPassword ? 'text' : 'password'" required
-                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 pr-10 transition-all duration-300"
-                placeholder="••••••••" />
-              <button type="button"
-                class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-indigo-600 transition"
-                @click="showPassword = !showPassword">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    :d="showPassword ? openEye : closedEye"/>
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <!-- Konfirmasi Password -->
-          <div class="space-y-1 relative">
-            <label class="block text-sm font-medium text-gray-700">Konfirmasi Password</label>
-            <div class="relative">
-              <input v-model="password_confirmation" :type="showPasswordConfirm ? 'text' : 'password'" required
-                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 pr-10 transition-all duration-300"
-                placeholder="••••••••" />
-              <button type="button"
-                class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-indigo-600 transition"
-                @click="showPasswordConfirm = !showPasswordConfirm">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    :d="showPasswordConfirm ? openEye : closedEye"/>
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <!-- Submit -->
-          <button type="submit"
-            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-md">
-            <span v-if="!isLoading">Daftar</span>
-            <span v-else class="flex items-center justify-center">
-              <svg class="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
-                viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                <path class="opacity-75" fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
-              </svg>
-              Memproses...
-            </span>
+        <!-- Password -->
+        <div class="relative">
+          <label class="text-sm font-medium text-slate-700">Password</label>
+          <input v-model="password" :type="showPassword ? 'text' : 'password'" required placeholder="••••••••"
+            class="w-full mt-1 px-4 py-2 pr-10 rounded-lg bg-white/80 placeholder-slate-400 text-slate-800 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
+          <button type="button" class="absolute top-9 right-3 text-blue-400 hover:text-indigo-600" @click="showPassword = !showPassword">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path :d="showPassword ? closedEye : openEye" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+            </svg>
           </button>
+        </div>
 
-          
-        </form>
+        <!-- Konfirmasi Password -->
+        <div class="relative">
+          <label class="text-sm font-medium text-slate-700">Konfirmasi Password</label>
+          <input v-model="password_confirmation" :type="showPasswordConfirm ? 'text' : 'password'" required placeholder="••••••••"
+            class="w-full mt-1 px-4 py-2 pr-10 rounded-lg bg-white/80 placeholder-slate-400 text-slate-800 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
+          <button type="button" class="absolute top-9 right-3 text-blue-400 hover:text-indigo-600" @click="showPasswordConfirm = !showPasswordConfirm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path :d="showPasswordConfirm ? closedEye : openEye" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="w-full py-2 bg-indigo-500 text-white font-semibold rounded-lg hover:bg-indigo-600 transition-all duration-300 shadow-md">
+          <span v-if="!isLoading">Daftar</span>
+          <span v-else class="flex items-center justify-center">
+            <svg class="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+            </svg>
+            Memproses...
+          </span>
+        </button>
 
         <!-- Error -->
-        <div v-if="error" class="p-3 bg-red-100 text-red-700 rounded-lg animate-shake">
+        <div v-if="error" class="p-3 bg-red-100 border border-red-300 text-sm rounded-md text-red-600 animate-shake">
           {{ error }}
         </div>
+      </form>
 
-        <!-- Link Login -->
-        <div class="text-center pt-4">
-          <router-link to="/login" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium hover:underline">
-            Sudah punya akun? <span class="font-bold">Login Sekarang</span>
-          </router-link>
-        </div>
+      <!-- Link ke Login -->
+      <div class="mt-6 text-center text-sm text-slate-600">
+        Sudah punya akun?
+        <router-link to="/login" class="underline font-semibold text-blue-600 hover:text-indigo-600 transition">
+          Login Sekarang
+        </router-link>
       </div>
     </div>
   </div>
@@ -147,60 +102,49 @@
 import { ref } from 'vue'
 import api from '../../axios'
 
-const wallet_address = ref('')
-const walletError = ref(null)
-
 const name = ref('')
+const wallet_address = ref('')
 const email = ref('')
 const password = ref('')
 const password_confirmation = ref('')
+const walletError = ref(null)
 const error = ref(null)
+const isLoading = ref(false)
 const showPassword = ref(false)
 const showPasswordConfirm = ref(false)
-const isLoading = ref(false)
 
 const openEye = 'M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z'
-const closedEye = 'M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411L21 21'
-
+const closedEye = 'M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M3 3l3.59 3.59'
 
 const validateWallet = () => {
-  const re = /^0x[a-fA-F0-9]{40}$/;
-  if (!wallet_address.value) {
-    walletError.value = null; // kosong? gapapa
-  } else if (!re.test(wallet_address.value)) {
-    walletError.value = 'Format wallet address tidak valid.';
-  } else {
-    walletError.value = null;
-  }
+  const re = /^0x[a-fA-F0-9]{40}$/
+  walletError.value = wallet_address.value && !re.test(wallet_address.value)
+    ? 'Format wallet address tidak valid.'
+    : null
 }
 
 const getFromMetamask = async () => {
   walletError.value = null
   if (typeof window.ethereum === 'undefined') {
-    walletError.value = 'Metamask tidak terdeteksi.';
-    return;
+    walletError.value = 'Metamask tidak terdeteksi.'
+    return
   }
-
   try {
-    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
     if (accounts.length > 0) {
-      wallet_address.value = accounts[0];
-      validateWallet();
+      wallet_address.value = accounts[0]
+      validateWallet()
     } else {
-      walletError.value = 'Tidak ada akun Metamask yang ditemukan.';
+      walletError.value = 'Tidak ada akun Metamask yang ditemukan.'
     }
-  } catch (err) {
-    walletError.value = 'Gagal mengambil wallet dari Metamask.';
+  } catch {
+    walletError.value = 'Gagal mengambil wallet dari Metamask.'
   }
 }
 
-
-
 const register = async () => {
   error.value = null
-  walletError.value = null
   isLoading.value = true
-
   validateWallet()
   if (walletError.value) {
     isLoading.value = false
@@ -223,19 +167,15 @@ const register = async () => {
     isLoading.value = false
   }
 }
-
 </script>
 
-<style>
-@keyframes float {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-20px) rotate(10deg); }
+<style scoped>
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-.animate-float-delay {
-  animation: float 6s ease-in-out 1s infinite;
+.animate-fade-in {
+  animation: fade-in 0.8s ease-out;
 }
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
@@ -244,5 +184,26 @@ const register = async () => {
 }
 .animate-shake {
   animation: shake 0.5s ease-in-out;
+}
+@keyframes text-glow {
+  0%, 100% { text-shadow: 0 0 5px #fff, 0 0 10px #60a5fa, 0 0 20px #4f46e5; }
+  50% { text-shadow: 0 0 10px #fff, 0 0 20px #60a5fa, 0 0 30px #4f46e5; }
+}
+.animate-text-glow {
+  animation: text-glow 3s ease-in-out infinite;
+}
+@keyframes ping-slow {
+  0% { transform: scale(1); opacity: 0.6; }
+  75%, 100% { transform: scale(2); opacity: 0; }
+}
+.animate-ping-slow {
+  animation: ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
 }
 </style>

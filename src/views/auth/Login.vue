@@ -1,118 +1,99 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
-    <!-- Main Card -->
-    <div class="relative w-full max-w-md bg-white rounded-xl shadow-2xl overflow-hidden transition-all duration-500 hover:shadow-lg hover:scale-[1.02]">
-      <!-- Tombol Back Di Dalam Kotak -->
-      <router-link 
-        to="/" 
-        class="absolute top-4 left-4 group z-10"
-      >
-        <div class="w-9 h-9 flex items-center justify-center rounded-full bg-indigo-50 hover:bg-indigo-100 text-indigo-600 hover:text-indigo-800 shadow transition-all duration-300">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-          </svg>
-        </div>
-      </router-link>
+  <div class="min-h-screen bg-white flex items-center justify-center p-6">
+    <!-- Kartu Form -->
+    <div class="relative w-full max-w-md rounded-3xl bg-gradient-to-br from-white via-slate-100 to-blue-100 text-slate-800 shadow-2xl p-8 animate-fade-in transition-all duration-500 hover:scale-[1.015] border border-blue-200/30">
 
-      <!-- Animated Header -->
-      <div class="relative h-32 bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-center">
-        <div class="absolute -top-6 -left-6 animate-float">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.736 6.979a.75.75 0 011.06.02l1.5 1.6a.75.75 0 010 1.04l-1.5 1.6a.75.75 0 11-1.08-1.04L9.716 8.5l-1.2-1.28a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-          </svg>
-        </div>
-        <h1 class="text-3xl font-bold text-white z-10 animate-bounce">Arisan Digital</h1>
-        <div class="absolute -bottom-4 -right-4 animate-float-delay">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-yellow-300 opacity-80" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm5-1a1 1 0 11-2 0 1 1 0 012 0z" clip-rule="evenodd" />
-          </svg>
+      <!-- Logo ARICHAIN: Ping dan Ring Light -->
+      <div class="flex justify-center mb-4">
+        <div class="relative w-16 h-16">
+          <!-- Ring Light berputar -->
+          <div class="absolute inset-0 rounded-full border-[3px] border-blue-300 opacity-40 animate-spin-slow blur-sm"></div>
+
+          <!-- Ping Effect -->
+          <div class="absolute inset-0 rounded-full bg-blue-400 opacity-30 blur-md animate-ping-slow"></div>
+
+          <!-- Logo handshake -->
+          <img
+            src="https://img.icons8.com/ios-filled/50/ffffff/handshake.png"
+            alt="Logo"
+            class="relative z-10 w-16 h-16 bg-gradient-to-tr from-blue-500 to-indigo-500 p-3 rounded-full shadow-xl"
+          />
         </div>
       </div>
 
+      <!-- Branding Title -->
+      <h1 class="text-center text-3xl font-bold tracking-wide animate-text-glow text-indigo-600">ARICHAIN</h1>
+      <p class="text-center text-sm text-slate-600 mb-6">Masuk ke akun digital arisan Anda</p>
+
       <!-- Form Login -->
-      <div class="p-8 space-y-6">
-        <form @submit.prevent="login" class="space-y-4">
-          <!-- Email -->
-          <div class="space-y-1">
-            <label class="block text-sm font-medium text-gray-700">Email</label>
-            <input 
-              v-model="email"
-              type="email"
-              required
-              class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
-              placeholder="email@contoh.com"
-            />
-          </div>
+      <form @submit.prevent="login" class="space-y-6">
+        <!-- Email -->
+        <div>
+          <label class="text-sm font-medium text-slate-700">Email</label>
+          <input
+            v-model="email"
+            type="email"
+            required
+            class="w-full mt-1 px-4 py-2 rounded-lg bg-white/80 text-slate-800 placeholder-slate-400 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            placeholder="email@contoh.com"
+          />
+        </div>
 
-          <!-- Password -->
-          <div class="space-y-1 relative">
-            <label class="block text-sm font-medium text-gray-700">Password</label>
-            <div class="relative">
-              <input 
-                v-model="password"
-                :type="showPassword ? 'text' : 'password'"
-                required
-                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 pr-10"
-                placeholder="••••••••"
-              />
-              <button
-                type="button"
-                class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-indigo-600 transition-colors"
-                @click="showPassword = !showPassword"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    :d="showPassword ? 
-                    'M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21' : 
-                    'M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z'"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <!-- Tombol Submit -->
-          <button 
-            type="submit"
-            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-md"
+        <!-- Password -->
+        <div class="relative">
+          <label class="text-sm font-medium text-slate-700">Password</label>
+          <input
+            v-model="password"
+            :type="showPassword ? 'text' : 'password'"
+            required
+            class="w-full mt-1 px-4 py-2 rounded-lg bg-white/80 text-slate-800 placeholder-slate-400 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400 pr-10"
+            placeholder="••••••••"
+          />
+          <button
+            type="button"
+            class="absolute top-9 right-3 text-blue-400 hover:text-indigo-600 transition"
+            @click="showPassword = !showPassword"
           >
-            <span v-if="!isLoading">Masuk</span>
-            <span v-else class="flex items-center justify-center">
-              <svg class="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              Memproses...
-            </span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                :d="showPassword 
+                  ? 'M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M3 3l3.59 3.59M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M21 21' 
+                  : 'M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z'"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              />
+            </svg>
           </button>
-        </form>
+        </div>
 
-        <!-- Pesan Error -->
-        <div 
-          v-if="error"
-          class="p-3 bg-red-100 text-red-700 rounded-lg animate-shake"
+        <!-- Submit -->
+        <button
+          type="submit"
+          class="w-full py-2 bg-indigo-500 text-white font-semibold rounded-lg hover:bg-indigo-600 transition-all duration-300 shadow-md"
         >
+          <span v-if="!isLoading">Masuk</span>
+          <span v-else class="flex items-center justify-center">
+            <svg class="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+            </svg>
+            Memproses...
+          </span>
+        </button>
+
+        <!-- Error -->
+        <div v-if="error" class="p-3 bg-red-100 border border-red-300 text-sm rounded-md text-red-600 animate-shake">
           {{ error }}
         </div>
+      </form>
 
-        <!-- Link ke Register -->
-        <div class="text-center pt-4">
-          <router-link 
-            to="/register"
-            class="text-indigo-600 hover:text-indigo-800 text-sm font-medium transition-all duration-300 hover:underline"
-          >
-            Belum punya akun? <span class="font-bold">Daftar Sekarang</span>
-          </router-link>
-        </div>
+      <!-- Register Link -->
+      <div class="mt-6 text-center text-sm text-slate-600">
+        Belum punya akun?
+        <router-link to="/register" class="underline font-semibold text-blue-600 hover:text-indigo-600 transition">
+          Daftar Sekarang
+        </router-link>
       </div>
     </div>
   </div>
@@ -145,7 +126,6 @@ const login = async () => {
 
     await new Promise(resolve => setTimeout(resolve, 1000))
     router.push('/dashboard')
-
   } catch (err) {
     error.value = err.response?.data?.message || 'Login gagal'
     isLoading.value = false
@@ -154,27 +134,60 @@ const login = async () => {
 </script>
 
 <style>
-@keyframes float {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-20px) rotate(10deg); }
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-.animate-float-delay {
-  animation: float 6s ease-in-out 1s infinite;
+.animate-fade-in {
+  animation: fade-in 0.8s ease-out;
 }
 
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-5px); }
-  40%, 80% { transform: translateX(5px); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
 }
 .animate-shake {
-  animation: shake 0.5s ease-in-out;
+  animation: shake 0.4s ease-in-out;
 }
 
-input:focus {
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+@keyframes text-glow {
+  0%, 100% { text-shadow: 0 0 5px #fff, 0 0 10px #60a5fa, 0 0 20px #4f46e5; }
+  50% { text-shadow: 0 0 10px #fff, 0 0 20px #60a5fa, 0 0 30px #4f46e5; }
+}
+.animate-text-glow {
+  animation: text-glow 3s ease-in-out infinite;
+}
+
+@keyframes ping-slow {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+.animate-ping-slow {
+  animation: ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
 }
 </style>

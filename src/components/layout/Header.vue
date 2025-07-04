@@ -1,39 +1,41 @@
 <template>
-  <header class="bg-gradient-to-br from-indigo-600 to-purple-600 shadow-sm z-10">
-    <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
-      <!-- Logo -->
-      <div class="flex items-center">
-        <img src="https://img.icons8.com/ios-filled/50/ffffff/handshake.png" alt="Logo" class="h-8 w-8 mr-2" />
-        <h1 class="text-xl font-bold text-white">Arichain</h1>
+  <header class="backdrop-blur-md bg-gradient-to-br from-[#0f172a] via-[#1e3a8a] to-[#2563eb] bg-opacity-90 shadow-xl z-10 relative overflow-hidden border-b border-blue-400/30">
+    <div class="max-w-7xl mx-auto px-4 py-5 sm:px-6 lg:px-8 flex justify-between items-center relative z-10">
+      <!-- Logo & Brand -->
+      <div class="flex items-center space-x-4">
+        <!-- Logo Denyut -->
+        <div class="relative w-12 h-12">
+          <div class="absolute inset-0 animate-ping-slow rounded-full bg-blue-400 opacity-30 blur-md"></div>
+          <img
+            src="https://img.icons8.com/ios-filled/50/ffffff/handshake.png"
+            alt="Logo"
+            class="relative z-10 w-12 h-12 animate-pulse drop-shadow-xl"
+          />
+        </div>
+
+        <!-- Judul Animasi -->
+        <h1 class="text-3xl font-extrabold bg-gradient-to-r from-white via-blue-400 to-indigo-500 text-transparent bg-clip-text tracking-wide animate-brand-glow">
+          ARICHAIN
+        </h1>
       </div>
 
-      <!-- Profile Dropdown -->
-      <div class="flex items-center space-x-4">
-        <div class="relative">
-          <div class="flex items-center space-x-2 cursor-pointer" @click="toggleProfileDropdown">
-            <div class="w-8 h-8 rounded-full bg-white text-indigo-600 font-semibold flex items-center justify-center">
-              {{ userName.charAt(0).toUpperCase() }}
-            </div>
-            <span class="text-white font-medium hidden md:inline">{{ userName }}</span>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-            </svg>
-          </div>
+      <!-- Jam, Tanggal, dan Nama Pengguna -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-6 text-white text-sm sm:text-base font-medium">
+        <div class="flex items-center space-x-2 text-blue-100">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>{{ currentTime }}</span>
+        </div>
+        <div class="hidden sm:inline">|</div>
+        <span class="mt-1 sm:mt-0 text-blue-100">{{ currentDate }}</span>
 
-          <div v-if="showProfileDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg py-1 z-20 border border-gray-100">
-            <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-              Profile
-            </a>
-            <button @click="logout" class="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-              Logout
-            </button>
+        <!-- Nama User -->
+        <div class="flex items-center space-x-3 mt-2 sm:mt-0">
+          <div class="w-9 h-9 rounded-full bg-white text-blue-800 font-bold flex items-center justify-center shadow-inner">
+            {{ userName.charAt(0).toUpperCase() }}
           </div>
+          <span class="hidden md:inline text-white font-semibold tracking-wide">{{ userName }}</span>
         </div>
       </div>
     </div>
@@ -41,34 +43,55 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import api from '../../axios'
+import { ref, onMounted } from 'vue'
 
-const router = useRouter()
-const userName = ref(JSON.parse(localStorage.getItem('user'))?.name || '')
-const showProfileDropdown = ref(false)
+const userName = ref(JSON.parse(localStorage.getItem('user'))?.name || 'Pengguna')
+const currentTime = ref('')
+const currentDate = ref('')
 
-const toggleProfileDropdown = () => {
-  showProfileDropdown.value = !showProfileDropdown.value
+const updateTime = () => {
+  const now = new Date()
+  const hours = now.getHours().toString().padStart(2, '0')
+  const minutes = now.getMinutes().toString().padStart(2, '0')
+  const seconds = now.getSeconds().toString().padStart(2, '0')
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
+
+  currentTime.value = `${hours}:${minutes}:${seconds}`
+  currentDate.value = now.toLocaleDateString('id-ID', options)
 }
 
-const logout = async () => {
-  try {
-    const token = localStorage.getItem('token')
-    await api.post('/logout', {}, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/json'
-      }
-    })
+onMounted(() => {
+  updateTime()
+  setInterval(updateTime, 1000)
+})
+</script>
 
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
-    router.push('/')
-  } catch (error) {
-    console.error('Logout failed:', error)
-    alert('Gagal logout. Silakan coba lagi.')
+<style scoped>
+/* Logo ring pulse */
+@keyframes ping-slow {
+  0% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
   }
 }
-</script>
+.animate-ping-slow {
+  animation: ping-slow 3s ease-out infinite;
+}
+
+/* Brand text glow effect */
+@keyframes brand-glow {
+  0%, 100% {
+    text-shadow: 0 0 4px #60a5fa, 0 0 10px #3b82f6, 0 0 20px #6366f1;
+  }
+  50% {
+    text-shadow: 0 0 10px #bfdbfe, 0 0 20px #3b82f6, 0 0 35px #6366f1;
+  }
+}
+.animate-brand-glow {
+  animation: brand-glow 3s ease-in-out infinite;
+}
+</style>

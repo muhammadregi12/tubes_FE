@@ -1,24 +1,29 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex flex-col items-center justify-center text-center px-4 overflow-hidden">
-    <!-- Navbar -->
-    <nav class="fixed top-0 left-0 w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md z-50 rounded-b-xl">
-      <div class="max-w-7xl mx-auto flex justify-between items-center py-4 px-6">
-        <div class="flex items-center space-x-2">
-          <img src="https://img.icons8.com/ios-filled/50/FFFFFF/handshake.png" alt="Logo" class="h-10 w-10 animate-wiggle" />
-          <span class="text-3xl font-bold text-white">Arichain</span>
+  <div class="min-h-screen bg-white text-gray-800 flex flex-col items-center justify-center text-center px-4 overflow-hidden">
+    <!-- Header Navbar -->
+    <header class="fixed top-0 left-0 w-full backdrop-blur-lg bg-gradient-to-r from-[#0f172a] via-[#1e40af] to-[#3b82f6] bg-opacity-95 shadow-2xl z-50 border-b border-blue-300/30 rounded-b-3xl text-white">
+      <div class="max-w-7xl mx-auto flex justify-between items-center py-5 px-6">
+        <!-- Logo & Judul -->
+        <div class="flex items-center space-x-3">
+          <img src="https://img.icons8.com/ios-filled/50/FFFFFF/handshake.png" alt="Logo" class="h-10 w-10 animate-spin-slow" />
+          <span class="text-3xl font-extrabold bg-gradient-to-r from-white via-blue-300 to-blue-600 text-transparent bg-clip-text tracking-widest drop-shadow-md">
+            Arichain
+          </span>
         </div>
 
-        <div class="space-x-6 hidden md:flex items-center">
-          <a href="#" class="text-white hover:text-yellow-300 font-medium transition-transform hover:scale-105">Home</a>
-          <a href="#" class="text-white hover:text-yellow-300 font-medium transition-transform hover:scale-105">Tentang</a>
-          <a href="#" class="text-white hover:text-yellow-300 font-medium transition-transform hover:scale-105">Fitur</a>
+        <!-- Desktop Menu -->
+        <div class="space-x-6 hidden md:flex items-center font-semibold tracking-wide text-sm">
+          <a href="#" class="hover:text-yellow-300 transition-transform hover:scale-105">Home</a>
+          <a href="#" class="hover:text-yellow-300 transition-transform hover:scale-105">Tentang</a>
+          <a href="#" class="hover:text-yellow-300 transition-transform hover:scale-105">Fitur</a>
           <router-link to="/login">
-            <button class="bg-white text-indigo-700 hover:text-indigo-900 px-6 py-2.5 rounded-full shadow-md transition-transform hover:scale-105">
+            <button class="bg-white text-indigo-700 hover:text-indigo-900 px-6 py-2.5 rounded-full shadow-lg hover:scale-105 transition-all font-semibold">
               Login
             </button>
           </router-link>
         </div>
 
+        <!-- Mobile toggle button -->
         <button @click="toggleMenu" class="md:hidden text-white">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -26,32 +31,34 @@
         </button>
       </div>
 
-      <div v-if="isMenuOpen" class="md:hidden bg-gradient-to-br from-indigo-600 to-purple-600 py-4 px-6 shadow-lg">
+      <!-- Mobile Menu -->
+      <div v-if="isMenuOpen" class="md:hidden bg-gradient-to-br from-indigo-600 to-purple-700 py-4 px-6 shadow-xl rounded-b-xl">
         <div class="flex flex-col space-y-4">
-          <a href="#" class="text-white hover:text-yellow-300 font-medium">Home</a>
-          <a href="#" class="text-white hover:text-yellow-300 font-medium">Tentang</a>
-          <a href="#" class="text-white hover:text-yellow-300 font-medium">Fitur</a>
+          <a href="#" class="hover:text-yellow-300 font-medium">Home</a>
+          <a href="#" class="hover:text-yellow-300 font-medium">Tentang</a>
+          <a href="#" class="hover:text-yellow-300 font-medium">Fitur</a>
           <router-link to="/register">
-            <button class="w-full bg-white text-indigo-700 hover:text-indigo-900 px-6 py-3 rounded-full shadow-md">
+            <button class="w-full bg-white text-indigo-700 hover:text-indigo-900 px-6 py-3 rounded-full shadow-lg hover:scale-105 transition-all font-semibold">
               Daftar Sekarang
             </button>
           </router-link>
         </div>
       </div>
-    </nav>
+    </header>
 
     <!-- Hero Section -->
-    <main class="pt-32 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12 px-4 relative z-10">
+    <main class="pt-40 pb-24 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12 px-4 relative z-10">
       <!-- Left -->
       <div class="md:w-1/2 text-left space-y-6">
-        <h1 class="text-5xl md:text-6xl font-extrabold text-gray-900 leading-tight animate-slide-up">
-          Selamat datang di <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Arichain</span>
+        <h1 class="text-5xl md:text-6xl font-extrabold text-gray-900 leading-tight animate-fade-up">
+          Selamat datang di <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-blue-500 to-purple-500">Arichain</span>
         </h1>
-        <p class="text-gray-600 text-xl animate-slide-up delay-100">
-            <B>Bangun Komunitas.</B> <b>Kelola Keuangan.</b><b>Tingkatkan Kebersamaan.</b> Satu platform untuk arisan yang jujur dan efisien.</p>
-        <div class="flex gap-4 animate-slide-up delay-200">
+        <p class="text-gray-600 text-xl animate-typing border-r-4 border-indigo-600 whitespace-nowrap overflow-hidden max-w-full">
+          Bangun Komunitas. Kelola Keuangan. Tingkatkan Kebersamaan.
+        </p>
+        <div class="flex gap-4 animate-fade-up delay-200">
           <router-link to="/register">
-            <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3.5 rounded-full text-lg font-medium transition-transform hover:scale-105 shadow-md">
+            <button class="bg-indigo-500 hover:bg-indigo-600 text-white px-8 py-3.5 rounded-full text-lg font-semibold shadow-xl hover:scale-105 transition-all">
               Mulai Sekarang
             </button>
           </router-link>
@@ -61,36 +68,72 @@
       <!-- Right -->
       <div class="md:w-1/2 relative">
         <img
-          src="../../public/image/slider1.png"
+          src="/image/slider1.png"
           alt="Group Arisan Digital"
-          class="w-full max-w-md mx-auto drop-shadow-xl transform hover:scale-[1.03] transition duration-500 animate-float"
+          class="w-full max-w-md mx-auto drop-shadow-2xl rounded-xl hover:scale-[1.03] transition duration-500 animate-float"
         />
 
-        <!-- Floating Money Icons -->
-        <div class="absolute top-1/4 -left-5 animate-float-delay-1">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-blue-500 opacity-90" viewBox="0 0 20 20" fill="currentColor">
-            <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd" />
-          </svg>
-        </div>
-
-        <div class="absolute top-1/3 -right-5 animate-float-delay-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-blue-400 opacity-80" viewBox="0 0 20 20" fill="currentColor">
-            <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd" />
-          </svg>
-        </div>
-
-        <div class="absolute -top-5 left-1/4 animate-float-delay-3">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-400 opacity-70" viewBox="0 0 20 20" fill="currentColor">
-            <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd" />
-          </svg>
-        </div>
-
-        <div class="absolute -bottom-10 -left-10 w-36 h-36 bg-indigo-100 rounded-full opacity-20 -z-10 animate-float-slow"></div>
-        <div class="absolute -top-10 -right-10 w-44 h-44 bg-purple-100 rounded-full opacity-20 -z-10 animate-float-slower"></div>
+        <!-- Floating Bubbles -->
+        <div class="absolute -top-8 left-1/4 w-36 h-36 bg-indigo-200 opacity-10 rounded-full animate-ping-slow -z-10"></div>
+        <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-purple-200 opacity-20 rounded-full animate-float-slower -z-10"></div>
+        <div class="absolute -top-10 -right-10 w-44 h-44 bg-blue-200 opacity-20 rounded-full animate-float-delay-3 -z-10"></div>
       </div>
     </main>
   </div>
 </template>
+
+<script setup>
+import { ref } from 'vue'
+const isMenuOpen = ref(false)
+const toggleMenu = () => (isMenuOpen.value = !isMenuOpen.value)
+</script>
+
+<style scoped>
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes fade-up {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin-slow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes ping-slow {
+  0% { transform: scale(1); opacity: 0.4; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+.animate-float-slower {
+  animation: float 8s ease-in-out infinite;
+}
+.animate-float-delay-3 {
+  animation: float 6s ease-in-out infinite;
+}
+.animate-fade-up {
+  animation: fade-up 0.9s ease-out both;
+}
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+.animate-ping-slow {
+  animation: ping-slow 3s ease-out infinite;
+}
+.animate-typing {
+  animation: typing 4s steps(40, end) 1s 1 normal both;
+}
+</style>
