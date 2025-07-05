@@ -95,10 +95,7 @@ export default {
     async handlePay(contractAddress, groupId) {
       const group = this.joinedGroups.find(g => g.id === groupId);
       if (group?.has_paid) {
-        this.notificationMessage = 'Kamu sudah membayar arisan untuk grup ini.';
-        this.notificationType = 'error';
-        this.showNotification = true;
-        setTimeout(() => this.showNotification = false, 3000);
+        this.showError('Kamu sudah membayar arisan untuk grup ini.');
         return;
       }
 
@@ -111,19 +108,29 @@ export default {
         // Update status bayar ke backend
         await axios.post(`/arisanGroup/${groupId}/pay`);
 
-        this.notificationMessage = 'Pembayaran arisan berhasil!';
-        this.notificationType = 'success';
-        this.showNotification = true;
-        setTimeout(() => this.showNotification = false, 3000);
-
+        this.showSuccess('Pembayaran arisan berhasil!');
         this.fetchJoinedGroups();
       } catch (error) {
-        this.notificationMessage = error?.response?.data?.message || error.message || 'Gagal melakukan pembayaran.';
-        this.notificationType = 'error';
-        this.showNotification = true;
-        setTimeout(() => this.showNotification = false, 3000);
+        const errMsg =
+          error?.reason || 
+          error?.error?.message || 
+          error?.message || 
+          'Gagal melakukan pembayaran.';
+
+        // Deteksi jika user reject di Metamask
+        if (
+          errMsg.toLowerCase().includes('user rejected') ||
+          error?.code === 4001
+        ) {
+          this.showError('Pembayaran dibatalkan oleh kamu di Metamask.');
+        } else {
+          this.showError(errMsg);
+        }
       }
     },
+
+
+    
 
 
     async handleDraw(contractAddress, groupId) {
@@ -142,15 +149,11 @@ export default {
           draw_date: new Date().toISOString().split('T')[0],
         });
 
-        this.notificationMessage = `🎉 Pemenang: ${winnerUser.data.name} (${winnerAddress}) dicatat di sistem!`;
-        this.notificationType = 'success';
-        this.showNotification = true;
-
-        setTimeout(() => (this.showNotification = false), 3000);
+        this.showSuccess(`🎉 Pemenang: ${winnerUser.data.name} (${winnerAddress}) dicatat di sistem!`);
 
         this.fetchJoinedGroups();
+
       } catch (err) {
-        // Tambahkan pengecekan jika error dari smart contract karena semua sudah menang
         const msg =
           err?.reason ||
           err?.error?.message ||
@@ -158,19 +161,33 @@ export default {
           err?.message ||
           'Gagal draw.';
 
-        if (msg.includes('Arisan selesai') || msg.includes('semua sudah menang')) {
-          this.notificationMessage =
-            '🎉 Arisan sudah selesai, semua peserta sudah pernah menang.';
+        if (
+          msg.toLowerCase().includes('user rejected') ||
+          err?.code === 4001
+        ) {
+          this.showError('Proses draw dibatalkan oleh kamu di Metamask.');
+        } else if (msg.includes('Arisan selesai') || msg.includes('semua sudah menang')) {
+          this.showError('🎉 Arisan sudah selesai, semua peserta sudah pernah menang.');
         } else {
-          this.notificationMessage = msg;
+          this.showError(msg);
         }
-
-        this.notificationType = 'error';
-        this.showNotification = true;
-        setTimeout(() => (this.showNotification = false), 3000);
       }
     },
 
+
+    showError(msg) {
+      this.notificationMessage = msg;
+      this.notificationType = 'error';
+      this.showNotification = true;
+      setTimeout(() => (this.showNotification = false), 3000);
+    },
+
+    showSuccess(msg) {
+      this.notificationMessage = msg;
+      this.notificationType = 'success';
+      this.showNotification = true;
+      setTimeout(() => (this.showNotification = false), 3000);
+    },
 
     async getNextDrawNumber(groupId) {
       const response = await axios.get(`/arisanGroup/${groupId}/next-draw-number`);

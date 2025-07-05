@@ -42,7 +42,7 @@
 
           <!-- Nilai Arisan -->
           <div>
-            <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">Nilai Arisan (Rp)</label>
+            <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">Nilai Arisan (ETH)</label>
             <input 
               type="number" 
               id="amount" 
@@ -196,7 +196,7 @@ const submitForm = async () => {
       return
     }
 
-    // 🧠 STEP 1: Simpan group dulu ke backend
+    // STEP 1: Simpan group dulu ke backend
     const response = await api.post('/arisanGroup', form.value, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -206,26 +206,43 @@ const submitForm = async () => {
 
     const createdGroup = response.data.data
 
-    // 🧠 STEP 2: Deploy kontrak via ethers.js
-    const contractAddress = await deployArisanContract()
+    try {
+      // STEP 2: Deploy kontrak via ethers.js
+      const contractAddress = await deployArisanContract()
 
-    // 🧠 STEP 3: Kirim contract address ke Laravel
-    await api.post(`/arisanGroup/${createdGroup.id}/contract-address`, {
-      contract_address: contractAddress
-    }, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/json'
-      }
-    })
+      // STEP 3: Kirim contract address ke Laravel
+      await api.post(`/arisanGroup/${createdGroup.id}/contract-address`, {
+        contract_address: contractAddress
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json'
+        }
+      })
 
-    notificationMessage.value = 'Group arisan & kontrak berhasil disimpan!'
-    notificationType.value = 'success'
-    showNotification.value = true
+      notificationMessage.value = 'Group arisan & kontrak berhasil disimpan!'
+      notificationType.value = 'success'
+      showNotification.value = true
 
-    setTimeout(() => {
-      router.push('/arisangroup')
-    }, 2000)
+      setTimeout(() => {
+        router.push('/arisangroup')
+      }, 2000)
+
+    } catch (contractError) {
+      console.error('Gagal deploy contract:', contractError)
+
+      // 🚨 kalau gagal deploy, hapus group yang sudah dibuat
+      await api.delete(`/arisanGroup/${createdGroup.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json'
+        }
+      })
+
+      notificationMessage.value = 'Gagal deploy contract. Data group dibatalkan.'
+      notificationType.value = 'error'
+      showNotification.value = true
+    }
 
   } catch (error) {
     console.error('Error:', error)
@@ -236,6 +253,7 @@ const submitForm = async () => {
     loading.value = false
   }
 }
+
 
 
 </script>

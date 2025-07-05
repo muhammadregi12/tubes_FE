@@ -47,10 +47,10 @@
           >
             <div class="space-y-2">
               <h3 class="text-xl font-semibold text-indigo-700">{{ group.name }}</h3>
-              <p class="text-gray-700">Jumlah: Rp {{ group.amount.toLocaleString() }}</p>
+              <p class="text-gray-700">Biaya: {{ group.amount.toLocaleString() }} ETH</p>
               <p class="text-gray-700">Durasi: {{ group.duration }}</p>
               <p class="text-gray-700">Mulai: {{ formatDate(group.start_date) }}</p>
-              <p class="text-gray-700">Peserta: {{ group.members_count || 0 }}</p>
+              <p class="text-gray-700">Peserta: {{ group.participants_count || 0 }} Orang</p>
 
               <button 
                 @click="handleJoin(group.id)"
@@ -151,30 +151,45 @@ export default {
     },
 
     async handleJoin(groupId) {
-      try {
-        const selectedGroup = this.groups.find(g => g.id === groupId);
-        const contractAddress = selectedGroup?.contract_address;
+  try {
+    const selectedGroup = this.groups.find(g => g.id === groupId);
+    const contractAddress = selectedGroup?.contract_address;
 
-        if (!contractAddress) throw new Error('Alamat kontrak tidak ditemukan.');
+    if (!contractAddress) throw new Error('Alamat kontrak tidak ditemukan.');
 
-        await joinSmartContract(contractAddress);
-        await axios.post(`/arisanGroup/${groupId}/join`);
+    await joinSmartContract(contractAddress);
+    await axios.post(`/arisanGroup/${groupId}/join`);
 
-        this.showNotification = true;
-        this.notificationMessage = 'Berhasil join arisan!';
-        this.notificationType = 'success';
-        this.status = 'Kamu sudah join arisan';
-        this.fetchGroups();
+    this.showNotification = true;
+    this.notificationMessage = 'Berhasil join arisan!';
+    this.notificationType = 'success';
+    this.status = 'Kamu sudah join arisan';
+    this.fetchGroups();
 
-        setTimeout(() => { this.showNotification = false }, 3000);
-      } catch (error) {
-        this.error = error.response?.data?.message || error.message || 'Gagal join arisan';
-        this.showNotification = true;
-        this.notificationMessage = this.error;
-        this.notificationType = 'error';
-        setTimeout(() => { this.showNotification = false }, 3000);
-      }
-    },
+    setTimeout(() => { this.showNotification = false }, 3000);
+  } catch (error) {
+    const msg =
+      error?.reason ||
+      error?.error?.message ||
+      error?.response?.data?.message ||
+      error?.message ||
+      'Gagal join arisan';
+
+    if (
+      msg.toLowerCase().includes('user rejected') ||
+      error?.code === 4001
+    ) {
+      this.notificationMessage = 'Join arisan dibatalkan oleh kamu di Metamask.';
+    } else {
+      this.notificationMessage = msg;
+    }
+
+    this.showNotification = true;
+    this.notificationType = 'error';
+    setTimeout(() => { this.showNotification = false }, 3000);
+  }
+},
+
 
     formatDate(dateString) {
       const options = { year: 'numeric', month: 'long', day: 'numeric' };
