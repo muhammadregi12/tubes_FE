@@ -178,7 +178,17 @@ export default {
     },
 
 
+    async fetchRemainingTimes() {
+  for (const group of this.joinedGroups) {
+    if (!group.contract_address) continue;
 
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const contract = new ethers.Contract(group.contract_address, Arisan.abi, provider);
+
+    const seconds = await contract.getRemainingTime();
+    this.$set(this.remainingTimes, group.id, Number(seconds)); // reactive
+  }
+},
 
 
 
