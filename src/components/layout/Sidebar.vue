@@ -47,6 +47,7 @@ const route = useRoute()
 const router = useRouter()
 
 const logout = () => {
+  localStorage.clear()
   alert("Anda telah logout")
   router.push("/login")
 }
