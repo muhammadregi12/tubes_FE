@@ -37,7 +37,7 @@
           <thead class="bg-white/20 text-indigo-100 uppercase text-xs">
             <tr>
               <th class="px-6 py-4 text-left">Nama Group</th>
-              <th class="px-6 py-4 text-left">Nilai Arisan</th>
+              <th class="px-6 py-4 text-left">Nilai Arisan Per Orang</th>
               <th class="px-6 py-4 text-left">Durasi</th>
               <th class="px-6 py-4 text-left">Tanggal Mulai</th>
               <th class="px-6 py-4 text-left">Tanggal Selesai</th>
@@ -53,7 +53,7 @@
                 {{ group.name }} <br />
                 <span class="text-sm text-white/60">#{{ group.code }}</span>
               </td>
-              <td class="px-6 py-4">Rp {{ formatCurrency(group.amount) }}</td>
+              <td class="px-6 py-4">Per Orang {{ formatCurrency(group.amount) }} ETH</td>
               <td class="px-6 py-4">{{ group.duration }}</td>
               <td class="px-6 py-4">{{ formatDate(group.start_date) }}</td>
               <td class="px-6 py-4">{{ formatDate(group.end_date) }}</td>

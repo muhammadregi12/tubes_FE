@@ -39,28 +39,32 @@
         </div>
 
         <!-- Group Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div 
-            v-for="group in groups"
-            :key="group.id"
-            class="border rounded-lg p-4 shadow hover:shadow-md transition-shadow bg-white"
-          >
-            <div class="space-y-2">
-              <h3 class="text-xl font-semibold text-indigo-700">{{ group.name }}</h3>
-              <p class="text-gray-700">Biaya: {{ group.amount.toLocaleString() }} ETH</p>
-              <p class="text-gray-700">Durasi: {{ group.duration }}</p>
-              <p class="text-gray-700">Mulai: {{ formatDate(group.start_date) }}</p>
-              <p class="text-gray-700">Peserta: {{ group.participants_count || 0 }} Orang</p>
+        <!-- Group Cards -->
+<div 
+  v-for="group in groups"
+  :key="group.id"
+  class="border rounded-lg p-4 shadow hover:shadow-md transition-shadow bg-white"
+>
+  <div class="space-y-2">
+    <h3 class="text-xl font-semibold text-indigo-700">{{ group.name }}</h3>
+    <p class="text-gray-700">Biaya Per Orang: {{ group.amount.toLocaleString() }} ETH</p>
+    <p class="text-gray-700">Durasi: {{ group.duration }}</p>
+    <p class="text-gray-700">Mulai: {{ formatDate(group.start_date) }}</p>
+    <p class="text-gray-700">Peserta: {{ group.participants_count || 0 }} Orang</p>
 
-              <button 
-                @click="handleJoin(group.id)"
-                class="w-full bg-yellow-300 text-gray-900 px-4 py-2 rounded-lg hover:bg-yellow-400 font-semibold transition-colors"
-              >
-                Join Arisan
-              </button>
-            </div>
-          </div>
-        </div>
+    <button 
+      @click="handleJoin(group)"
+      :disabled="group.joined"
+      class="w-full px-4 py-2 rounded-lg font-semibold transition-colors"
+      :class="group.joined 
+        ? 'bg-gray-300 text-gray-600 cursor-not-allowed' 
+        : 'bg-yellow-300 text-gray-900 hover:bg-yellow-400'"
+    >
+      {{ group.joined ? 'Sudah Join' : 'Join Arisan' }}
+    </button>
+  </div>
+</div>
+
 
         <!-- Pagination -->
         <div class="mt-8 flex justify-center items-center gap-4 text-sm">
@@ -92,7 +96,6 @@
 <script>
 import DefaultLayout from '../../../components/DefaultLayout.vue'
 import Notification from '../../../components/Notification.vue'
-import { joinSmartContract } from '../../../utils/blockchain'
 import axios from '../../../axios'
 
 export default {
@@ -114,11 +117,11 @@ export default {
       showNotification: false,
       notificationMessage: '',
       notificationType: 'success'
-    };
+    }
   },
 
   mounted() {
-    this.fetchGroups();
+    this.fetchGroups()
   },
 
   methods: {
@@ -130,85 +133,83 @@ export default {
             per_page: this.perPage,
             page: this.currentPage
           }
-        });
+        })
 
-        this.groups = response.data.data;
-        this.currentPage = response.data.meta.current_page;
-        this.lastPage = response.data.meta.last_page;
-        this.total = response.data.meta.total;
+        this.groups = response.data.data
+        this.currentPage = response.data.meta.current_page
+        this.lastPage = response.data.meta.last_page
+        this.total = response.data.meta.total
       } catch (error) {
-        this.error = 'Gagal memuat data group arisan';
-        console.error(error);
+        this.error = 'Gagal memuat data group arisan'
+        console.error(error)
       }
     },
 
     searchGroups() {
-      clearTimeout(this.searchTimeout);
+      clearTimeout(this.searchTimeout)
       this.searchTimeout = setTimeout(() => {
-        this.currentPage = 1;
-        this.fetchGroups();
-      }, 500);
+        this.currentPage = 1
+        this.fetchGroups()
+      }, 500)
     },
 
-    async handleJoin(groupId) {
+    async handleJoin(group) {
+  if (group.joined) return // sudah join
+
   try {
-    const selectedGroup = this.groups.find(g => g.id === groupId);
-    const contractAddress = selectedGroup?.contract_address;
+    await axios.post(`/arisanGroup/${group.id}/join`)
 
-    if (!contractAddress) throw new Error('Alamat kontrak tidak ditemukan.');
+    this.showNotification = true
+    this.notificationMessage = 'Berhasil join arisan!'
+    this.notificationType = 'success'
+    this.status = 'Kamu sudah join arisan'
 
-    await joinSmartContract(contractAddress);
-    await axios.post(`/arisanGroup/${groupId}/join`);
+    group.joined = true // update lokal supaya tombol disable
 
-    this.showNotification = true;
-    this.notificationMessage = 'Berhasil join arisan!';
-    this.notificationType = 'success';
-    this.status = 'Kamu sudah join arisan';
-    this.fetchGroups();
-
-    setTimeout(() => { this.showNotification = false }, 3000);
+    setTimeout(() => {
+      this.showNotification = false
+    }, 3000)
   } catch (error) {
     const msg =
-      error?.reason ||
-      error?.error?.message ||
       error?.response?.data?.message ||
       error?.message ||
-      'Gagal join arisan';
+      'Gagal join arisan'
 
-    if (
-      msg.toLowerCase().includes('user rejected') ||
-      error?.code === 4001
-    ) {
-      this.notificationMessage = 'Join arisan dibatalkan oleh kamu di Metamask.';
-    } else {
-      this.notificationMessage = msg;
+    this.notificationMessage = msg
+    this.notificationType = 'error'
+    this.showNotification = true
+
+    // kalau error karena sudah join (409), set joined=true supaya tombol disable
+    if (error?.response?.status === 409) {
+      group.joined = true
     }
 
-    this.showNotification = true;
-    this.notificationType = 'error';
-    setTimeout(() => { this.showNotification = false }, 3000);
+    setTimeout(() => {
+      this.showNotification = false
+    }, 3000)
   }
 },
 
 
     formatDate(dateString) {
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
-      return new Date(dateString).toLocaleDateString('id-ID', options);
+      const options = { year: 'numeric', month: 'long', day: 'numeric' }
+      return new Date(dateString).toLocaleDateString('id-ID', options)
     },
 
     nextPage() {
       if (this.currentPage < this.lastPage) {
-        this.currentPage++;
-        this.fetchGroups();
+        this.currentPage++
+        this.fetchGroups()
       }
     },
 
     prevPage() {
       if (this.currentPage > 1) {
-        this.currentPage--;
-        this.fetchGroups();
+        this.currentPage--
+        this.fetchGroups()
       }
     }
   }
-};
+}
 </script>
+

@@ -13,9 +13,9 @@
 
         <!-- Desktop Menu -->
         <div class="space-x-6 hidden md:flex items-center font-semibold tracking-wide text-sm">
-          <a href="#" class="hover:text-yellow-300 transition-transform hover:scale-105">Home</a>
-          <a href="#" class="hover:text-yellow-300 transition-transform hover:scale-105">Tentang</a>
-          <a href="#" class="hover:text-yellow-300 transition-transform hover:scale-105">Fitur</a>
+          <router-link to="/" class="hover:text-yellow-300 transition-transform hover:scale-105 text-yellow-300">Home</router-link>
+          <router-link to="/panduan" class="hover:text-yellow-300 transition-transform hover:scale-105">Panduan</router-link>
+          
           <router-link to="/login">
             <button class="bg-white text-indigo-700 hover:text-indigo-900 px-6 py-2.5 rounded-full shadow-lg hover:scale-105 transition-all font-semibold">
               Login

@@ -22,8 +22,8 @@
             class="p-4 border rounded-lg shadow-sm bg-white hover:shadow-md transition"
           >
             <h3 class="text-lg font-semibold text-indigo-600">{{ group.name }}</h3>
-            <p class="text-sm text-gray-600">Kode: {{ group.code }}</p>
-            <p class="text-sm text-gray-600">Jumlah Uang: {{ group.amount }} ETH</p>
+            <p class="text-sm text-gray-600">Peserta: {{ group.participants_count || 0 }} Orang</p>
+            <p class="text-sm text-gray-600">Jumlah Bayar Per Peserta: {{ group.amount }} ETH</p>
             <p class="text-sm text-gray-600">Mulai: {{ formatDate(group.start_date) }}</p>
             <p class="text-sm text-gray-600">Selesai: {{ formatDate(group.end_date) }}</p>
 
@@ -39,13 +39,22 @@
               {{ group.has_paid ? 'Sudah Bayar' : 'Bayar Arisan' }}
             </button>
 
+            <!-- Tombol Draw -->
             <button
-            v-if="group.current_drawer === group.user_wallet"
-            @click="handleDraw(group.contract_address, group.id)"
-            class="mt-3 w-full py-2 px-4 rounded-lg font-semibold transition bg-blue-500 text-white hover:bg-blue-600"
-          >
-            Draw Arisan
-          </button>
+              v-if="group.current_drawer === group.user_wallet"
+              @click="handleDraw(group.contract_address, group.id)"
+              class="mt-3 w-full py-2 px-4 rounded-lg font-semibold transition bg-blue-500 text-white hover:bg-blue-600"
+            >
+              Draw Arisan
+            </button>
+
+            <!-- btn bayar detail -->
+             <button
+                @click="goToPaymentHistory(group.id)"
+                class="mt-2 w-full py-2 px-4 rounded-lg font-semibold transition bg-yellow-500 text-white hover:bg-yellow-600"
+              >
+                Lihat Riwayat Pembayaran
+              </button>
           </div>
         </div>
       </div>
@@ -54,17 +63,13 @@
 </template>
 
 <script>
-import DefaultLayout from '../../../components/DefaultLayout.vue'
-import Notification from '../../../components/Notification.vue'
-import axios from '../../../axios'
-import { payArisanSmartContract, drawArisanSmartContract } from '../../../utils/blockchain'
-
+import DefaultLayout from '../../../components/DefaultLayout.vue';
+import Notification from '../../../components/Notification.vue';
+import axios from '../../../axios';
+import { payArisanSmartContract, drawArisanSmartContract } from '../../../utils/blockchain';
 
 export default {
-  components: {
-    DefaultLayout,
-    Notification
-  },
+  components: { DefaultLayout, Notification },
 
   data() {
     return {
@@ -80,15 +85,17 @@ export default {
   },
 
   methods: {
+
+    goToPaymentHistory(groupId) {
+      this.$router.push({ name: 'payment-history', params: { groupId } });
+    },
+
     async fetchJoinedGroups() {
       try {
         const response = await axios.get('/my-arisan-groups');
         this.joinedGroups = response.data.data;
       } catch (error) {
-        this.notificationMessage = 'Gagal memuat data grup arisan kamu.';
-        this.notificationType = 'error';
-        this.showNotification = true;
-        setTimeout(() => this.showNotification = false, 3000);
+        this.showError('Gagal memuat data grup arisan kamu.');
       }
     },
 
@@ -102,26 +109,15 @@ export default {
       try {
         if (!contractAddress) throw new Error('Alamat kontrak tidak tersedia.');
 
-        // Bayar ke smart contract
         await payArisanSmartContract(contractAddress);
 
-        // Update status bayar ke backend
         await axios.post(`/arisanGroup/${groupId}/pay`);
 
         this.showSuccess('Pembayaran arisan berhasil!');
         this.fetchJoinedGroups();
       } catch (error) {
-        const errMsg =
-          error?.reason || 
-          error?.error?.message || 
-          error?.message || 
-          'Gagal melakukan pembayaran.';
-
-        // Deteksi jika user reject di Metamask
-        if (
-          errMsg.toLowerCase().includes('user rejected') ||
-          error?.code === 4001
-        ) {
+        const errMsg = this.extractError(error);
+        if (errMsg.toLowerCase().includes('user rejected') || error?.code === 4001) {
           this.showError('Pembayaran dibatalkan oleh kamu di Metamask.');
         } else {
           this.showError(errMsg);
@@ -129,18 +125,12 @@ export default {
       }
     },
 
-
-    
-
-
     async handleDraw(contractAddress, groupId) {
       try {
         const winnerAddress = await drawArisanSmartContract(contractAddress);
-
         if (!winnerAddress) throw new Error('Gagal mendapatkan alamat pemenang dari smart contract');
 
         const winnerUser = await axios.get(`/user-by-wallet/${winnerAddress}`);
-
         const nextDrawNumber = await this.getNextDrawNumber(groupId);
 
         await axios.post(`/arisanGroup/${groupId}/record-draw`, {
@@ -151,20 +141,12 @@ export default {
 
         this.showSuccess(`🎉 Pemenang: ${winnerUser.data.name} (${winnerAddress}) dicatat di sistem!`);
 
-        this.fetchJoinedGroups();
+        // 🔥 Tambahkan ini
+        await this.handleUpdateDrawer(groupId);
 
       } catch (err) {
-        const msg =
-          err?.reason ||
-          err?.error?.message ||
-          err?.response?.data?.message ||
-          err?.message ||
-          'Gagal draw.';
-
-        if (
-          msg.toLowerCase().includes('user rejected') ||
-          err?.code === 4001
-        ) {
+        const msg = this.extractError(err);
+        if (msg.toLowerCase().includes('user rejected') || err?.code === 4001) {
           this.showError('Proses draw dibatalkan oleh kamu di Metamask.');
         } else if (msg.includes('Arisan selesai') || msg.includes('semua sudah menang')) {
           this.showError('🎉 Arisan sudah selesai, semua peserta sudah pernah menang.');
@@ -174,6 +156,40 @@ export default {
       }
     },
 
+
+    async getNextDrawNumber(groupId) {
+      const response = await axios.get(`/arisanGroup/${groupId}/next-draw-number`);
+      return response.data.next_draw_number;
+    },
+
+    async handleUpdateDrawer(groupId) {
+      try {
+        const res = await axios.post(`/arisan-group/${groupId}/update-drawer`);
+        this.showSuccess(`Drawer berikutnya: User ID ${res.data.next_drawer_user_id}`);
+        this.fetchJoinedGroups();
+      } catch (err) {
+        this.showError(this.extractError(err));
+      }
+    },
+
+    formatDate(dateStr) {
+      if (!dateStr) return '-';
+      return new Date(dateStr).toLocaleDateString('id-ID', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    },
+
+    extractError(error) {
+      return (
+        error?.reason ||
+        error?.error?.message ||
+        error?.response?.data?.message ||
+        error?.message ||
+        'Terjadi kesalahan.'
+      );
+    },
 
     showError(msg) {
       this.notificationMessage = msg;
@@ -188,35 +204,6 @@ export default {
       this.showNotification = true;
       setTimeout(() => (this.showNotification = false), 3000);
     },
-
-    async getNextDrawNumber(groupId) {
-      const response = await axios.get(`/arisanGroup/${groupId}/next-draw-number`);
-      return response.data.next_draw_number;
-    },
-
-
-    async fetchRemainingTimes() {
-  for (const group of this.joinedGroups) {
-    if (!group.contract_address) continue;
-
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    const contract = new ethers.Contract(group.contract_address, Arisan.abi, provider);
-
-    const seconds = await contract.getRemainingTime();
-    this.$set(this.remainingTimes, group.id, Number(seconds)); // reactive
-  }
-},
-
-
-
-    formatDate(dateStr) {
-      if (!dateStr) return '-';
-      return new Date(dateStr).toLocaleDateString('id-ID', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-    }
   }
 };
 </script>

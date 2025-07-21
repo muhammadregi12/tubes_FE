@@ -2,7 +2,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'https://tubebe-production.up.railway.app/api'
+  baseURL: 'http://localhost:8000/api' // sesuaikan dengan base API kamu
 })
 
 api.interceptors.request.use(config => {

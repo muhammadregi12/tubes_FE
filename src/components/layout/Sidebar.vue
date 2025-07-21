@@ -20,6 +20,7 @@
         <SidebarLink to="/arisangroup" icon="database" text="Arisan Group" />
         <SidebarLink to="/join" icon="plus-circle" text="Join Arisan" />
         <SidebarLink to="/arisanku" icon="user-group" text="Grup Arisan Saya" />
+        <SidebarLink to="/riwayat-pembayaran-saya" icon="database" text="Riwayat Pembayaran Saya" />
       </nav>
 
       <!-- Logout Button -->
